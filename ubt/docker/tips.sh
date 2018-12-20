@@ -10,6 +10,8 @@ tips_inspect_func()
 {
     echo 'Example:'
     echo "docker inspect --format='{{.NetworkSettings.IPAddress}}' mytest"
+    echo "docker inspect --format='{{.Config.Volumes}}' mytest"
+    echo "docker inspect --format='{{.HostConfig.Binds}}' mytest"
 }
 
 tips_restart_func()
