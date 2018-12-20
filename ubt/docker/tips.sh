@@ -5,6 +5,13 @@ set -o errexit
 
 #set -x
 
+
+tips_inspect_func()
+{
+    echo 'Example:'
+    echo "docker inspect --format='{{.NetworkSettings.IPAddress}}' mytest"
+}
+
 tips_restart_func()
 {
     echo 'Example:'
@@ -86,15 +93,16 @@ tips_help_func()
     #echo "docker exec -it <container's name> bash"
 
     echo "Supported tips:"
-    echo '1) [env]      Tips for getting docker Env infos.'
-    echo '2) [run]      Tips for "run" command. Run container.'
-    echo '3) [ps]       Tips for "ps" command. List containers.'
-    echo '4) [images]   Tips for "images" command. List images.'
-    echo '5) [rm]       Tips for "rm" command. Remove container.'
-    echo '6) [rmi]      Tips for "rmi" command. Remove Image.'
-    echo '7) [start]    Tips for "start" command. Start container.'
-    echo '8) [stop]     Tips for "stop" command. Stop container.'
-    echo '9) [restart]  Tips for "restart" command. restart container.'
+    echo '001) [env]      Tips for getting docker Env infos.'
+    echo '002) [run]      Tips for "run" command. Run container.'
+    echo '003) [ps]       Tips for "ps" command. List containers.'
+    echo '004) [images]   Tips for "images" command. List images.'
+    echo '005) [rm]       Tips for "rm" command. Remove container.'
+    echo '006) [rmi]      Tips for "rmi" command. Remove Image.'
+    echo '007) [start]    Tips for "start" command. Start container.'
+    echo '008) [stop]     Tips for "stop" command. Stop container.'
+    echo '009) [restart]  Tips for "restart" command. Restart container.'
+    echo '010) [inspect]  Tips for "inspect" command. Get informations about images or containers.'
 }
 
 
@@ -102,32 +110,35 @@ case $1 in
     help) echo "Tips for docker manipulations:"
         tips_help_func
         ;;
-    env) echo "1) [env] Tips for geting docker environment infos:"
+    env) echo "001) [env] Tips for geting docker environment infos:"
         tips_env_func
         ;;
-    run) echo '2) [run] Tips for "run" command.'
+    run) echo '002) [run] Tips for "run" command.'
         tips_run_func
         ;;
-    ps) echo '3) [ps]   Tips for "ps" command.'
+    ps) echo '003) [ps]   Tips for "ps" command.'
         tips_ps_func
         ;;
-    images) echo '4) [images]   Tips for "images" command.'
+    images) echo '004) [images]   Tips for "images" command.'
         tips_images_func
         ;;
-    rm) echo '5) [rm]   Tips for "rm" command.'
+    rm) echo '005) [rm]   Tips for "rm" command.'
         tips_rm_func
         ;;
-    rmi) echo '6) [rmi]   Tips for "rmi" command.'
+    rmi) echo '006) [rmi]   Tips for "rmi" command.'
         tips_rmi_func
         ;;
-    start) echo '7) [start]    Tips for "start" command. Start container.'
+    start) echo '007) [start]    Tips for "start" command. Start container.'
         tips_start_func
         ;;
-    stop) echo '8) [stop]    Tips for "stop" command. Stop container.'
+    stop) echo '008) [stop]    Tips for "stop" command. Stop container.'
         tips_stop_func
         ;;
-    restart) echo '9) [restart]     Tips for "restart" command. Restart container.'
+    restart) echo '009) [restart]     Tips for "restart" command. Restart container.'
         tips_restart_func
+        ;;
+    inspect) echo '010) [inspect]  Tips for "inspect" command. Get informations about images or containers.'
+        tips_inspect_func
         ;;
     *) echo "Unknown cmd: $1"
 esac
