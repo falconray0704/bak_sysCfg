@@ -33,6 +33,21 @@ shrink_image_func()
     echo "./pishrink.sh image.img.raw image.img"
 }
 
+resize_root_func()
+{
+    #echo 'How to resize "/" :'
+    echo 'Login as root.'
+    # enlarge the 3rd partition (this example uses mmcblk0)
+    echo 'growpart /dev/mmcblk0 3'
+    # resize the physical volume
+    echo 'pvresize /dev/mmcblk0p3'
+    # extend the root filesystem to take up the space just added to the volume that it is in
+    echo 'lvextend -l +100%FREE /dev/fedora/root'
+    # resize root partition for the server image (which uses xfs)
+    echo 'xfs_growfs -d /'
+
+}
+
 print_help_func()
 {
     echo "Supported utils commands:"
@@ -43,18 +58,21 @@ print_help_func()
 }
 
 case $1 in
-	"configSwapSize") echo "How to configure swap size ..."
+	configSwapSize) echo "How to configure swap size ..."
         config_swap_size_func
 	;;
-	"restore") echo "Recovering ..."
+	restore) echo "Recovering ..."
         restore_from_image_func
 	;;
-	"backup") echo "Backup sdcard ..."
+	backup) echo "Backup sdcard ..."
         backup_from_sdCard_func
 	;;
-	"shrink") echo "Shrink image ..."
+	shrink) echo "Shrink image ..."
         shrink_image_func
 	;;
+    resizeRoot) echo 'How to resize "/" :'
+        resize_root_func
+    ;;
 	*|-h) echo "Unknow cmd"
         print_help_func
     ;;

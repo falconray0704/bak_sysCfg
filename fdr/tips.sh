@@ -92,11 +92,27 @@ tips_dnf_func()
 
 }
 
+tips_lvm_func()
+{
+    echo "[001] Show physical volume infos in the disk:"
+    echo 'lvmdiskscan'
+    echo ""
+    echo "[002] Show physical volume infos in the system:"
+    echo 'pvscan'
+    echo 'pvs'
+    echo 'pvdisplay'
+    echo ""
+    echo "[003] Create physical volume :"
+    echo 'pvcreate /dev/sdc2'
+    echo ""
+}
+
 tips_help_func()
 {
     echo "Supported tips:"
     echo '001) [dnf]        Tips for "dnf".'
     echo '002) [nmcli]      Tips for "nmcli".'
+    echo '003) [nmcli]      Tips for "nmcli".'
 }
 
 
@@ -104,8 +120,11 @@ case $1 in
     dnf) echo "001) [dnf] Tips:"
         tips_dnf_func
         ;;
-    nmcli) echo "001) [nmcli] Tips:"
+    nmcli) echo "002) [nmcli] Tips:"
         tips_nmcli_func
+        ;;
+    lvm) echo "003) [lvm] Tips:"
+        tips_lvm_func
         ;;
     help|*) echo "Tips for fedora:"
         tips_help_func
