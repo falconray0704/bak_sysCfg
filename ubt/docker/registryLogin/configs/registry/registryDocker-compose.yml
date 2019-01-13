@@ -1,0 +1,13 @@
+version: "3"
+services:
+  REGISTRY_NAME:
+    image: registry
+    container_name: REGISTRY_NAME
+    ports:
+      - 5000:5000
+    restart: "always"
+    volumes:
+      - docker_reg_images:/var/lib/registry
+      - docker_reg_home/config.yml:/etc/docker/registry/config.yml
+      - docker_reg_home/auths:/auth
+
