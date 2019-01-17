@@ -1,0 +1,19 @@
+version: "3"
+services:
+  REGISTRY_NAME:
+    image: registry
+    restart: "always"
+    container_name: REGISTRY_NAME
+    ports:
+      - 443:5000
+    environment:
+      REGISTRY_HTTP_TLS_CERTIFICATE: /certs/REGISTRY_HTTP_TLS_CERTIFICATE_NAME
+      REGISTRY_HTTP_TLS_KEY: /certs/REGISTRY_HTTP_TLS_KEY_NAME
+      REGISTRY_AUTH: htpasswd
+      REGISTRY_AUTH_HTPASSWD_PATH: /auth/htpasswd
+      REGISTRY_AUTH_HTPASSWD_REALM: Registry Realm
+    volumes:
+      - docker_reg_images:/var/lib/registry
+      - docker_reg_home/auths:/auth
+      - docker_reg_home/certs:/certs
+

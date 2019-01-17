@@ -5,28 +5,6 @@ set -o errexit
 
 #set -x
 
-install_DockerCompose_func()
-{
-    # refer to https://docs.docker.com/compose/install/#install-compose
-    sudo curl -L "https://github.com/docker/compose/releases/download/1.22.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-    sudo chmod +x /usr/local/bin/docker-compose
-
-    # https://docs.docker.com/compose/completion/#install-command-completion
-    sudo curl -L https://raw.githubusercontent.com/docker/compose/1.22.0/contrib/completion/bash/docker-compose -o /etc/bash_completion.d/docker-compose
-
-    # check
-    docker-compose --version
-
-}
-
-tips_func()
-{
-    echo "1) Fetch logs of the container:"
-    echo "docker logs -f peer0.org1.example.com"
-
-    echo "2) Enter container's bash:"
-    echo "docker exec -it <container's name> bash"
-}
 
 REGISTRY_NAME="preg"
 REGISTRY_VERSION="2.7"
@@ -61,7 +39,7 @@ setupEnv_no_auth_func()
     sudo chown -R $USER:$USER ${docker_reg_home}
 
     mkdir -p ./tmpConfigs
-    cp configs/registry/registryDaemon.json ./tmpConfigs/
+    cp configs/registryDaemon.json ./tmpConfigs/
 
 	sudo sed -i "s/REGISTRY_DOMAIN/${REGISTRY_DOMAIN}/" ./tmpConfigs/registryDaemon.json
 	sudo sed -i "s/REGISTRY_PORT/${REGISTRY_PORT}/" ./tmpConfigs/registryDaemon.json
@@ -160,12 +138,6 @@ case $1 in
         ;;
     checkDocker) echo "Checking docker env..."
         check_Docker_Env_func
-        ;;
-    installDockerCompose) echo "Installing Docker Compose ..."
-        install_DockerCompose_func
-        ;;
-    tips) echo "Tips for docker manipulations:"
-        tips_func
         ;;
     *) echo "Unknown cmd: $1"
 esac
