@@ -3,7 +3,7 @@
 set -o nounset
 set -o errexit
 
-set -x
+#set -x
 
 install_DockerCompose_func()
 {
@@ -59,15 +59,23 @@ install_repo_func()
     #sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu xenial stable"
 }
 
-tips_func()
+install_utils_func()
 {
-    echo "1) Fetch logs of the container:"
-    echo "docker logs -f peer0.org1.example.com"
-
-    echo "2) Enter container's bash:"
-    echo "docker exec -it <container's name> bash"
+    sudo apt-get install bridge-utils
 }
 
+usage_func()
+{
+    echo "Supported functionalities:"
+    echo "[uninstallOldVersions]"
+    echo "[installRepo]"
+    echo "[installDocker]"
+    echo "[checkDocker]"
+    echo "[installDockerCompose]"
+    echo "[installUtils]"
+}
+
+[ $# -lt 1 ] && usage_func && exit
 
 case $1 in
     uninstallOldVersions) echo "Unstalling old versions..."
@@ -85,8 +93,8 @@ case $1 in
     installDockerCompose) echo "Installing Docker Compose ..."
         install_DockerCompose_func
         ;;
-    tips) echo "Tips for docker manipulations:"
-        tips_func
+    installUtils) echo "Installing useful utils ..."
+        install_utils_func
         ;;
     *) echo "Unknown cmd: $1"
 esac
