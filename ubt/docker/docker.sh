@@ -19,6 +19,11 @@ install_DockerCompose_func()
 
 }
 
+uninstall_DockerCompose_func()
+{
+    sudo rm /usr/local/bin/docker-compose
+}
+
 install_Docker_func()
 {
     # https://docs.docker.com/install/linux/docker-ce/ubuntu/#install-docker-ce-1
@@ -72,6 +77,7 @@ usage_func()
     echo "[installDocker]"
     echo "[checkDocker]"
     echo "[installDockerCompose]"
+    echo "[uninstallDockerCompose]"
     echo "[installUtils]"
 }
 
@@ -92,6 +98,9 @@ case $1 in
         ;;
     installDockerCompose) echo "Installing Docker Compose ..."
         install_DockerCompose_func
+        ;;
+    uninstallDockerCompose) echo "Uninstalling Docker Compose ..."
+        uninstall_DockerCompose_func
         ;;
     installUtils) echo "Installing useful utils ..."
         install_utils_func
