@@ -1,5 +1,8 @@
 #!/bin/sh
 
+set -o nounset
+set -o errexit
+
 #set -x
 
 DRONE_HOME="/opt/cicd/drone"
