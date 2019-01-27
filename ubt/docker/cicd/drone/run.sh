@@ -14,7 +14,6 @@ deploy_func()
 
     cp ./docker-compose.yml ${DRONE_HOME}
     cp ./env.sh ${DRONE_HOME}
-    cp ./run.sh ${DRONE_HOME}
 
     echo "Launch steps:"
     echo "Populate informations into ${DRONE_HOME}/env.sh."
@@ -30,7 +29,7 @@ usage()
 
 [ $# -lt 1 ] && usage && exit
 
-case $0 in
+case $1 in
     deploy) echo "Deploying to ${DRONE_HOME} ..."
         deploy_func
         ;;
