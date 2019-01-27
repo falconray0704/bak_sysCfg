@@ -27,7 +27,7 @@ usage()
 
 [ $# -lt 1 ] && usage && exit
 
-case in $0
+case $0 in
     deploy) echo "Deploying to ${DRONE_HOME} ..."
         deploy_func
         ;;
