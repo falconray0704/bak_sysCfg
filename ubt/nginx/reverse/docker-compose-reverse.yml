@@ -6,9 +6,9 @@ services:
     ports:
       - "80:80"
     volumes:
-      - ${NGINX_PROXY_REVERSE_ROOT_CONF_D}:/etc/nginx/conf.d
+      - ${NGINX_PROXY_REVERSE_ROOT_DATAS_NGINXPROXY_CONF_D}:/etc/nginx/conf.d
     networks:
-      - nginxReverseProxy
+      - nginxReverse
 
   dockergen:
     image: jwilder/docker-gen
@@ -19,9 +19,9 @@ services:
       - nginx_reverse
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
-      - ${NGINX_PROXY_REVERSE_ROOT_CONF_D}/nginx.tmpl:/etc/docker-gen/templates/nginx.tmpl
+      - ${NGINX_PROXY_REVERSE_ROOT_DATAS_NGINXPROXY_CONF_D}/nginx.tmpl:/etc/docker-gen/templates/nginx.tmpl
     networks:
-      - nginxReverseProxy
+      - nginxReverse
 
   whoami:
     image: jwilder/whoami
@@ -31,12 +31,12 @@ services:
     environment:
       - VIRTUAL_HOST=hello.doryhub.com
     networks:
-      - nginxReverseProxy
+      - nginxReverse
 
 
 
 networks:
-  nginxReverseProxy:
+  nginxReverse:
     driver: bridge
     name: nginx-reverse
 
