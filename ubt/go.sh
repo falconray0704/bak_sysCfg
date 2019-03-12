@@ -7,7 +7,7 @@ set -o errexit
 # trace each command execute with attachment infomations, same as `bash -x myscripts.sh`
 #set -o xtrace
 
-GOVERSION="1.11.4"
+GOVERSION="1.12"
 
 install_dependence_func()
 {
