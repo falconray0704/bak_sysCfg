@@ -79,6 +79,9 @@ tips_sysLimit_func()
     echo "sysctl -w /proc/sys/net/core/netdev_max_backlog=2048"
     echo "sysctl -w net.ipv4.tcp_tw_recycle=1"
     echo "sysctl -w net.ipv4.tcp_tw_reuse=1"
+
+    echoC "(4) Debug refer to:"
+    echo "http://blog.kissingwolf.com/2017/09/09/net-nf-conntrack-max-%E8%AE%BE%E7%BD%AE%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/"
 }
 
 tips_help_func()
