@@ -26,17 +26,17 @@ tips_sysLimit_func()
     echoC "(1) Changing apply to system config file:"
     echo ""
     echo "Change limitation of file opening for all processes in the system:"
-    echo 'echo 2000500 > /proc/sys/fs/file-max'
-    echo "or"
     echo 'sysctl -w "fs.file-max=2000500"'
     echo ""
     echo "Change resource limitation for current shell and processes were opened in it:"
-    echo '"echo 2000500 > /proc/sys/fs/nr_open" and "ulimit -n 2000500"'
-    echo "or"
     echo "sysctl -w fs.nr_open=2000500"
+    echo 'ulimit -n 2000500'
     echo ""
     echo "Change limitation of connection by iptables:"
+    echo '"vim /etc/modules" add new line "nf_conntrack" and reboot system'
     echo "sysctl -w net.nf_conntrack_max=2000500"
+    echo 'sysctl -w net.netfilter.nf_conntrack_max = 2000500'
+    echo 'sysctl -w net.core.somaxconn = 2000500'
     echo ""
     echo "Check limitation of connection by iptables:"
     echo "wc -l /proc/net/nf_conntrack"
@@ -51,10 +51,18 @@ tips_sysLimit_func()
     echo "Change resource limitation for current shell and processes were opened in it:"
     echo '"vim /etc/sysctl.conf" make "fs.nr_open = 2000500"'
     echo "and"
-    echo 'vim "/etc/security/limits.conf" make "* soft nofile 2000500" and "* hard nofile 2000500"'
+    echo 'vim "/etc/security/limits.conf" make following lines:'
+    echo "* soft nofile 2000500"
+    echo "* hard nofile 2000500"
+    echo "root soft nofile 2000500"
+    echo "root hard nofile 2000500"
     echo ""
     echo "Change limitation of connection by iptables:"
-    echo '"vim /etc/sysctl.conf" make "net.nf_conntrack_max = 2000500"'
+    echo '"vim /etc/modules" add new line "nf_conntrack" and reboot system'
+    echo '"vim /etc/sysctl.conf" and make following lines"'
+    echo 'net.netfilter.nf_conntrack_max = 2000500'
+    echo 'net.nf_conntrack_max = 2000500'
+    echo 'net.core.somaxconn = 2000500'
 
     echoC "(3) Optimizations of net stack for testing:"
     echo "sysctl -w fs.file-max=2000500"
