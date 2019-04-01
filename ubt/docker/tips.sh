@@ -25,6 +25,9 @@ tips_stop_func()
 {
     echo 'Example:'
     echo 'sudo docker stop mytest'
+    echo ''
+    echo 'Stop containers with name prefix:'
+    echo "docker ps --format '{{.Names}}' | grep \"^<container name>\" | awk '{print \$1}' | xargs -I {} docker stop {}"
 }
 
 tips_start_func()
