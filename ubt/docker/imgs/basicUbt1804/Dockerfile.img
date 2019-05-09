@@ -1,0 +1,24 @@
+FROM ubuntu:18.04
+
+ARG user
+ARG uid
+ARG group
+ARG gid
+
+ENV DEBIAN_FRONTEND noninteractive
+ENTRYPOINT ["bash"]
+EXPOSE 80 21
+
+ENV HOSTNAME="dc"
+
+RUN echo "nameserver 192.168.11.1" >> /etc/resolv.conf \
+    && groupadd -r "$group" -g "$gid" && useradd -r -u "$uid" -g "$gid" "$user" \
+    && apt-get update \
+    && apt-get -y install apt-utils \
+    && apt-get -y dist-upgrade \
+    && apt-get -y upgrade \
+    && basicPkgs='vim curl git wget tree htop iputils-ping pigz pbzip2 pxz dnsutils net-tools' \
+    && apt-get -y install $basicPkgs
+
+USER $user
+

@@ -230,6 +230,16 @@ tips_network_func()
 
 }
 
+tips_commit_func()
+{
+    echo ""
+    echo "Commit container changes to image:"
+    echo 'docker commit [operations] <container ID or name> [repo Name[:<tag name>]]'
+    echo ""
+    echo "eg:"
+    echo 'docker commit --author "rayruan <falconray@yahoo.com>" --message "vim installed" vim ubuntu:vim'
+}
+
 tips_help_func()
 {
     #echo "1) Fetch logs of the container:"
@@ -256,6 +266,7 @@ tips_help_func()
     echo '017) [port]     Tips for "port" command. Port operations.'
     echo '018) [logs]     Tips for "logs" command. Show container logs.'
     echo '019) [network]  Tips for "network" command. Network operations.'
+    echo '020) [commit]   Tips for "commit" command. Commit container changes to image.'
 }
 
 [ $# -lt 1 ] && tips_help_func && exit
@@ -320,6 +331,9 @@ case $1 in
         ;;
     network) echo '019 [network] Tips for "network" command'
         tips_network_func
+        ;;
+    commit) echo '020 [commit] Tips for "commit" command'
+        tips_commit_func
         ;;
     *) echo "Unknown cmd: $1"
 esac
