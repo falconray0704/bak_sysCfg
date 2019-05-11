@@ -11,8 +11,9 @@ EXPOSE 80 21
 
 ENV HOSTNAME="dc"
 
-RUN echo "nameserver 192.168.11.1" >> /etc/resolv.conf \
-    && groupadd -r "$group" -g "$gid" && useradd -r -u "$uid" -g "$gid" "$user" \
+RUN groupadd -r "$group" -g "$gid" \
+    && useradd -r -m -u "$uid" -g "$gid" "$user" \
+    && usermod -aG $group root \
     && apt-get update \
     && apt-get -y install apt-utils \
     && apt-get -y dist-upgrade \
@@ -20,5 +21,6 @@ RUN echo "nameserver 192.168.11.1" >> /etc/resolv.conf \
     && basicPkgs='vim curl git wget tree htop iputils-ping pigz pbzip2 pxz dnsutils net-tools' \
     && apt-get -y install $basicPkgs
 
-USER $user
+#USER $user
+
 

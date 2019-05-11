@@ -38,12 +38,13 @@ install_from_src()
 install_from_repo
 #install_from_src
 
-sudo apt-get -y install ctags
+sudo apt-get -y install ctags git exuberant-ctags ncurses-term curl
 pushd ~/
 rm -rf .vimrc vim generate.vim
 popd
 
 cp ./.vimrc* ~/
+curl 'https://vim-bootstrap.com/generate.vim' --data 'langs=c&langs=erlang&langs=go&langs=html&langs=javascript&langs=lua&langs=perl&langs=php&langs=python&editor=vim&frameworks=vuejs' > ~/.vimrc
 
 #echo "Fetch generate.vim from http://www.vim-bootstrap.com/"
 #echo "mv generate.vim ~/.vimrc"
