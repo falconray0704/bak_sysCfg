@@ -12,7 +12,7 @@ sudo apt-get -y upgrade
 
 install_from_repo()
 {
-    sudo apt-get -y install vim
+    sudo apt-get -y install vim vim-gtk
 }
 
 install_from_src()
