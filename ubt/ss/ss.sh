@@ -48,7 +48,7 @@ install_dependence()
     sudo apt-get -y update
     sudo apt-get -y upgrade
     sudo apt-get -y dist-upgrade
-    sudo apt-get -y install --no-install-recommends gettext build-essential autoconf libtool libpcre3-dev asciidoc xmlto libev-dev libc-ares-dev automake libmbedtls-dev libsodium-dev
+    sudo apt-get -y install --no-install-recommends gettext build-essential autoconf libtool libpcre3-dev asciidoc xmlto libev-dev libc-ares-dev automake 
 
 }
 
