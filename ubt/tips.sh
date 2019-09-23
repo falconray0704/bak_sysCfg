@@ -84,25 +84,40 @@ tips_sysLimit_func()
     echo "http://blog.kissingwolf.com/2017/09/09/net-nf-conntrack-max-%E8%AE%BE%E7%BD%AE%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/"
 }
 
+tips_apt_func()
+{
+    echoC "1) Check and install repo available packets:"
+    echo "sudo apt-cache search libboost"
+    echo "sudo apt-get install libboost1.62-*"
+
+    echoC "2) Remove repo packets:"
+    echo "sudo apt autoremove vim"
+
+}
+
 tips_help_func()
 {
     echoC "Supported tips:"
     echo '001) [compress]       Tips for compression.'
     echo '002) [curl]           Tips for curl.'
     echo '003) [sysLimit]       Tips for change system limitations.'
+    echo '004) [apt]            Tips for apt* commands.'
 }
 
 [ $# -lt 1 ] && tips_help_func && exit
 
 case $1 in
-    compress) echoR "001) [compression] Tips for compreession:"
+    "compress") echoY "001) [compression] Tips for compreession:"
         tips_compress_func
         ;;
-    curl) echoR "002) [curl] Tips for curl:"
+    "curl") echoY "002) [curl] Tips for curl:"
         tips_curl_func
         ;;
-    sysLimit) echoR "002) [sysLimit] Tips for change system limitations:"
+    "sysLimit") echoY "002) [sysLimit] Tips for change system limitations:"
         tips_sysLimit_func
+        ;;
+    "apt") echoY '004) [apt]            Tips for apt* commands.'
+        tips_apt_func
         ;;
     *) echo "Unknown command:"
         ;;
