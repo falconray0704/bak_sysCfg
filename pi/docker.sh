@@ -4,7 +4,7 @@ set -o nounset
 set -o errexit
 
 . ../libShell/echo_color.lib
-
+. ../libShell/sysEnv.lib
 
 install_DockerCompose_func()
 {
@@ -51,6 +51,7 @@ print_usage_func()
 
 case $1 in
     install) echoY "Installing ..."
+        is_root_func
         install_Docker_func
         ;;
     check) echoY "Checking docker env..."
