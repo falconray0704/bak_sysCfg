@@ -1,0 +1,10 @@
+
+
+is_root_func()
+{
+    if [[ $EUID -ne 0 ]]; then
+       echoR "Following operations must be run as root" 
+       exit 1
+    fi
+}
+
