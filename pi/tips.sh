@@ -25,7 +25,7 @@ backup_from_sdCard_func()
 {
     echo "How to backup:"
     echo "sudo fdisk -l"
-    echo "sudo bs=4k dd if=/dev/sdz of=image-\`date +%d%m%y\`.img status=progress"
+    echo "sudo bs=4M dd if=/dev/<sdcard device> of=image-\`date +%Y%m%d%H%M\`.img status=progress"
 }
 
 shrink_image_func()
