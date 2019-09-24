@@ -39,7 +39,6 @@ print_usage_func()
 
 case $1 in
     "check") echoY "Checking current system BBR setting..."
-        is_root_func
         check_bbr_func
         ;;
     "enable") echoY "Configuring current system for BBR enable..."
