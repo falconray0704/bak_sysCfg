@@ -8,11 +8,9 @@ set -o errexit
 
 install_DockerCompose_func()
 {
-    COMPOSE_VERSION=1.24.1
-
     # Install required packages
     sudo apt update
-    sudo apt install -y python python-pip
+    sudo apt install -y python python-pip libffi-dev python-backports.ssl-match-hostname
 
     # Install Docker Compose from pip
     # This might take a while
@@ -39,8 +37,34 @@ install_DockerCompose_run_as_container_func()
 
 install_Docker_func()
 {
-    # refer to https://www.raspberrypi.org/blog/docker-comes-to-raspberry-pi/
-    curl -sSL https://get.docker.com | sh
+    # refer to https://withblue.ink/2019/07/13/yes-you-can-run-docker-on-raspbian.html
+    # Install some required packages first
+    sudo apt update
+    sudo apt install -y \
+         apt-transport-https \
+         ca-certificates \
+         curl \
+         gnupg2 \
+         software-properties-common
+
+    # Get the Docker signing key for packages
+    curl -fsSL https://download.docker.com/linux/$(. /etc/os-release; echo "$ID")/gpg | sudo apt-key add -
+
+    # Add the Docker official repos
+    echo "deb [arch=armhf] https://download.docker.com/linux/$(. /etc/os-release; echo "$ID") \
+         $(lsb_release -cs) stable" | \
+    sudo tee /etc/apt/sources.list.d/docker.list
+
+    # Install Docker
+    # The aufs package, part of the "recommended" packages, won't install on Buster just yet, because of missing pre-compiled kernel modules.
+    # We can work around that issue by using "--no-install-recommends"
+    sudo apt update
+    sudo apt install -y --no-install-recommends \
+        docker-ce \
+        cgroupfs-mount
+
+    sudo systemctl enable docker
+    sudo systemctl start docker
 
     # use Docker as a non-root user
     sudo usermod -aG docker pi
@@ -53,7 +77,8 @@ check_Docker_Env_func()
     docker info
     docker version
 #    docker run -i -t resin/rpi-raspbian
-    docker run --rm -it hello-world
+    docker run --rm arm32v7/hello-world
+#    docker run --rm -it hello-world
 }
 
 print_usage_func()
