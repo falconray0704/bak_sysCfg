@@ -42,6 +42,10 @@ system_deploy_func()
     restore_from_image_func
     echoY "(2) Upgrade kernel with BBR enable."
     echo "./kernelUpgrade.sh upgrade /dev/<sdcard device without suffix. eg:/dev/sdc , not /dev/sdc1>"
+    echoY "(3) Install basic tools."
+    echo "sudo apt-get install git vim wget curl"
+    echoY "(4) Enable BBR configs."
+    echo "./enable_bbr.sh enable"
 }
 
 print_help_func()
