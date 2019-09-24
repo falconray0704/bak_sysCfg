@@ -42,12 +42,14 @@ system_deploy_func()
     restore_from_image_func
     echoY "(2) Upgrade kernel with BBR enable."
     echo "./kernelUpgrade.sh upgrade /dev/<sdcard device without suffix. eg:/dev/sdc , not /dev/sdc1>"
-    echoY "(3) Install basic tools."
+    echoY "(3) Avoid no hdmi output in case drop power unexpectively."
+    echo "Uncomment hdmi_force_hotplug=1 in /boot/config.txt"
+    echoY "(4) Install basic tools."
     echo "sudo apt-get install git vim wget curl"
-    echoY "(4) Enable BBR configs."
+    echoY "(5) Enable BBR configs."
     echo "./enable_bbr.sh enable"
     echo "sudo reboot"
-    echoY "(5) Install docker and docker-compose."
+    echoY "(6) Install docker and docker-compose."
     echo "./docker.sh install"
     echo "./docker.sh compose"
 }
