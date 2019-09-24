@@ -46,6 +46,10 @@ system_deploy_func()
     echo "sudo apt-get install git vim wget curl"
     echoY "(4) Enable BBR configs."
     echo "./enable_bbr.sh enable"
+    echo "sudo reboot"
+    echoY "(5) Install docker and docker-compose."
+    echo "./docker.sh install"
+    echo "./docker.sh compose"
 }
 
 print_help_func()
