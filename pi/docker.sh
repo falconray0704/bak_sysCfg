@@ -9,11 +9,15 @@ set -o errexit
 install_DockerCompose_func()
 {
     COMPOSE_VERSION=1.24.1
-    sudo curl -L "https://github.com/docker/compose/releases/download/${COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-    sudo chmod +x /usr/local/bin/docker-compose
-    sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
-    # Install command completion
-    sudo curl -L https://raw.githubusercontent.com/docker/compose/${COMPOSE_VERSION}/contrib/completion/bash/docker-compose -o /etc/bash_completion.d/docker-compose
+
+    # Install required packages
+    sudo apt update
+    sudo apt install -y python python-pip
+
+    # Install Docker Compose from pip
+    # This might take a while
+    sudo pip install docker-compose
+
     # check docker-compose
     docker-compose --version
 }
@@ -48,7 +52,8 @@ check_Docker_Env_func()
 {
     docker info
     docker version
-    docker run -i -t resin/rpi-raspbian
+#    docker run -i -t resin/rpi-raspbian
+    docker run --rm -it hello-world
 }
 
 print_usage_func()
