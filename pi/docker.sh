@@ -77,8 +77,7 @@ check_Docker_Env_func()
     docker info
     docker version
 #    docker run -i -t resin/rpi-raspbian
-    docker run --rm arm32v7/hello-world
-#    docker run --rm -it hello-world
+    docker run --rm -it hello-world
 }
 
 print_usage_func()
