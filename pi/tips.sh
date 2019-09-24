@@ -35,6 +35,15 @@ shrink_image_func()
     echo "./pishrink.sh image.img"
 }
 
+system_deploy_func()
+{
+    echoY "How to deploy raspbian system with raw sdcard:"
+    echoY "(1) Deploy official image."
+    restore_from_image_func
+    echoY "(2) Upgrade kernel with BBR enable."
+    echo "./kernelUpgrade.sh upgrade /dev/<sdcard device without suffix. eg:/dev/sdc , not /dev/sdc1>"
+}
+
 print_help_func()
 {
     echoY "Supported utils commands:"
@@ -47,20 +56,23 @@ print_help_func()
 [ $# -lt 1 ] && print_help_func && exit 1
 
 case $1 in
+    "os") echoY "Deploy raspbian..."
+        system_deploy_func
+        ;;
 	"configSwapSize") echoY "How to configure swap size ..."
         config_swap_size_func
-	;;
+        ;;
 	"restore") echoY "Recovering ..."
         restore_from_image_func
-	;;
+        ;;
 	"backup") echoY "Backup sdcard ..."
         backup_from_sdCard_func
-	;;
+        ;;
 	"shrink") echoY "Shrink image ..."
         shrink_image_func
-	;;
+        ;;
 	*|-h) echoR "Unknow cmd: $1"
         print_help_func
-    ;;
+        ;;
 esac
 
