@@ -88,7 +88,7 @@ install_ss_service_func()
     sudo mkdir -p /etc/shadowsocks-libev
 
     sudo cp tmpSSConfigs/config.json /etc/shadowsocks-libev/
-    sudo cp shadowsocks-libev_configs/shadowsocks-libev-redir@.service /lib/systemd/system/
+    sudo cp ./shadowsocks-libev-redir.service /lib/systemd/system/
     popd
 }
 
@@ -102,14 +102,14 @@ uninstall_ss_service_func()
 
 enable_ss_service_func()
 {
-	sudo systemctl enable shadowsocks-libev-redir@.service
-	sudo systemctl start shadowsocks-libev-redir@.service
+	sudo systemctl enable shadowsocks-libev-redir.service
+	sudo systemctl start shadowsocks-libev-redir.service
 }
 
 disable_ss_service_func()
 {
-	sudo systemctl stop shadowsocks-libev-redir@.service
-	sudo systemctl disable shadowsocks-libev-redir@.service
+	sudo systemctl stop shadowsocks-libev-redir.service
+	sudo systemctl disable shadowsocks-libev-redir.service
 }
 
 
@@ -133,24 +133,25 @@ usage_func()
 
 case $1 in
 	mkcfg) echoY "Make ss config files..."
-            make_ss_configs_func
+        make_ss_configs_func
 	;;
 	install_service) echoY "Install ss-redir service..."
-            install_ss_service_func
-            enable_ss_service_func
+        install_ss_service_func
+        enable_ss_service_func
 	;;
 	uninstall_service) echoY "Uninstall ss-redir service..."
-            disable_ss_service_func
+        disable_ss_service_func
 	;;
 	enable_service) echoY "Enable ss-redir service..."
-            enable_ss_service_func
+        enable_ss_service_func
 	;;
 	disable_service) echoY "Disable ss-redir service..."
-            disable_ss_service_func
+        disable_ss_service_func
 	;;
 	check_bbr) echoY "Checking for enable bbr..."
-            check_bbr_func
+        check_bbr_func
 	;;
 	*) echo "unknow cmd"
+        usage_func
 esac
 
