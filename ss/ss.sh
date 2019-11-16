@@ -87,6 +87,7 @@ install_ss_service_func()
     pushd ${SS_REDIR_INSTALL_PATH}
     sudo mkdir -p /etc/shadowsocks-libev
 
+    sudo cp ./ss-redir /usr/bin/
     sudo cp tmpSSConfigs/config.json /etc/shadowsocks-libev/
     sudo cp ./shadowsocks-libev-redir.service /lib/systemd/system/
     popd
@@ -98,6 +99,9 @@ uninstall_ss_service_func()
 
     sudo rm -rf /etc/shadowsocks-libev_bak
     sudo mv /etc/shadowsocks-libev /etc/shadowsocks-libev_bak
+
+    sudo rm /lib/systemd/system/shadowsocks-libev-redir.service
+    sudo rm /usr/bin/ss-redir
 }
 
 enable_ss_service_func()
@@ -140,7 +144,7 @@ case $1 in
         enable_ss_service_func
 	;;
 	uninstall_service) echoY "Uninstall ss-redir service..."
-        disable_ss_service_func
+	uninstall_ss_service_func
 	;;
 	enable_service) echoY "Enable ss-redir service..."
         enable_ss_service_func
