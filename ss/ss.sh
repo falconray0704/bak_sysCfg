@@ -88,7 +88,7 @@ install_ss_service_func()
     sudo mkdir -p /etc/shadowsocks-libev
 
     sudo cp tmpSSConfigs/config.json /etc/shadowsocks-libev/
-    sudo cp shadowsocks-libev_configs/shadowsocks-libev-redir.service /lib/systemd/system/
+    sudo cp shadowsocks-libev_configs/shadowsocks-libev-redir@.service /lib/systemd/system/
     popd
 }
 
@@ -102,14 +102,14 @@ uninstall_ss_service_func()
 
 enable_ss_service_func()
 {
-	sudo systemctl enable shadowsocks-libev-redir.service
-	sudo systemctl start shadowsocks-libev-redir.service
+	sudo systemctl enable shadowsocks-libev-redir@.service
+	sudo systemctl start shadowsocks-libev-redir@.service
 }
 
 disable_ss_service_func()
 {
-	sudo systemctl stop shadowsocks-libev-redir.service
-	sudo systemctl disable shadowsocks-libev-redir.service
+	sudo systemctl stop shadowsocks-libev-redir@.service
+	sudo systemctl disable shadowsocks-libev-redir@.service
 }
 
 
