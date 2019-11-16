@@ -49,22 +49,22 @@ get_ss_redir_config_args()
 
 check_bbr_func()
 {
-    sudo sysctl net.ipv4.tcp_available_congestion_control
-    sudo sysctl net.ipv4.tcp_congestion_control
-    sudo sysctl net.core.default_qdisc
-    sudo lsmod | grep bbr
+    sysctl net.ipv4.tcp_available_congestion_control
+    sysctl net.ipv4.tcp_congestion_control
+    sysctl net.core.default_qdisc
+    lsmod | grep bbr
 }
 
 build_ss_redir_configs()
 {
     pushd ${SS_REDIR_INSTALL_PATH}
-    sudo rm -rf tmpSSConfigs
-    mkdir -p tmpSSConfigs
-    cp ./config.json ./tmpSSConfigs
+    rm -rf ./tmpSSConfigs
+    mkdir -p ./tmpSSConfigs
+    cp ./config.json ./tmpSSConfigs/
 
-	sudo sed -i "s/0\.0\.0\.0/${ssServerIP}/" ./tmpSSConfigs/config.json
-	sudo sed -i "s/443/${ssServerPort}/" ./tmpSSConfigs/config.json
-	sudo sed -i "s/1080/${ssRedirLocalPort}/" ./tmpSSConfigs/config.json
+	sed -i "s/0\.0\.0\.0/${ssServerIP}/" ./tmpSSConfigs/config.json
+	sed -i "s/443/${ssServerPort}/" ./tmpSSConfigs/config.json
+	sed -i "s/1080/${ssRedirLocalPort}/" ./tmpSSConfigs/config.json
 
     echoY "=== config.json is : ==="
     cat ./tmpSSConfigs/config.json
@@ -113,31 +113,42 @@ disable_ss_service_func()
 }
 
 
-if [ $UID -ne 0 ]
-then
-    echoY "Superuser privileges are required to run this script."
-    echoY "e.g. \"sudo $0\""
-    exit 1
-fi
+#if [ $UID -ne 0 ]
+#then
+#    echoY "Superuser privileges are required to run this script."
+#    echoY "e.g. \"sudo $0\""
+#    exit 1
+#fi
+
+usage_func()
+{
+    echoY "./ss.sh <cmd> "
+    echo ""
+    echoY "Supported cmd:"
+    echo "[ mkcfg, install_service, uninstall_service, enable_service, disable_service, check_bbr ]"
+}
+
+
+[ $# -lt 1 ] && echoR "Invalid args count:$# " && usage_func && exit 1
 
 case $1 in
-	"make_configs") echoY "Make ss config files..."
+	mkcfg) echoY "Make ss config files..."
             make_ss_configs_func
 	;;
-	"install_service") echoY "Install ss-redir service..."
+	install_service) echoY "Install ss-redir service..."
             install_ss_service_func
             enable_ss_service_func
 	;;
-	"uninstall_service") echoY "Uninstall ss-redir service..."
+	uninstall_service) echoY "Uninstall ss-redir service..."
             disable_ss_service_func
 	;;
-	"enable_service") echoY "Enable ss-redir service..."
+	enable_service) echoY "Enable ss-redir service..."
             enable_ss_service_func
 	;;
-	"disable_service") echoY "Disable ss-redir service..."
+	disable_service) echoY "Disable ss-redir service..."
             disable_ss_service_func
 	;;
-	"check_bbr") echoY "Checking for enable bbr..."
+	check_bbr) echoY "Checking for enable bbr..."
             check_bbr_func
 	;;
 	*) echo "unknow cmd"
