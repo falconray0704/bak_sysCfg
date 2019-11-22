@@ -38,10 +38,10 @@ usage_func()
     echo "./configure.sh <cmd> <target>"
     echo ""
     echo "Supported cmd:"
-    echo "[ rename ]"
+    echo "[ install, rename ]"
     echo ""
     echo "Supported target:"
-    echo "[ apDev ]"
+    echo "[ dep, apDev ]"
 }
 
 
@@ -50,8 +50,21 @@ usage_func()
 mkdir -p tmp
 
 case $1 in
-    rename) echoY "Rename AP device name to piAPDev..."
-        rename_AP_device_func
+    install) echoY "Installing dependence..."
+        if [ $2 == "dep" ]
+        then
+            sudo apt-get -y install lshw
+        else
+            echoR "Command install only support target dep."
+        fi
+        ;;
+    rename) echoY "Renaming AP device name to piAPDev..."
+        if [ $2 == "apDev" ]
+        then
+            rename_AP_device_func
+        else
+            echoR "Command rename only support target apDev."
+        fi
         ;;
     *) echo "Unsupported cmd:$1."
         usage_func
