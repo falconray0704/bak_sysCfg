@@ -25,7 +25,7 @@ rename_AP_device_func()
         echo "device mac: ${APDEV_MAC}"
         cp ./cfgs/70-piAPDev_network_interfaces.rules ./tmp/
         sed -i "s/macAddr/${APDEV_MAC}/" ./tmp/70-piAPDev_network_interfaces.rules
-        cp ./tmp/70-piAPDev_network_interfaces.rules /etc/udev/rules.d/
+        sudo cp ./tmp/70-piAPDev_network_interfaces.rules /etc/udev/rules.d/
         cat ./tmp/70-piAPDev_network_interfaces.rules
     else
         echoR "Can not get the mac address of ${APDEV_NAME}"
