@@ -136,7 +136,7 @@ hostapd_config()
 	#echo "cmd:${cmd}"
 
     echoY "Preparing config file for hostapd..."
-	cp ./configs/hostapd.conf ./${TMP_DIR}/hostapd.conf
+	cp ./cfgs/hostapd.conf ./${TMP_DIR}/hostapd.conf
 	sed -i "s/interface=wlan0/interface=${APDEV_NAME}/g" ./${TMP_DIR}/hostapd.conf
 	sed -i "s/ssid=piAP/ssid=${apSSID}/g" ./${TMP_DIR}/hostapd.conf
 	sed -i "s/channel=6/channel=${apCh}/g" ./${TMP_DIR}/hostapd.conf
@@ -146,14 +146,14 @@ hostapd_config()
 	cat ./${TMP_DIR}/hostapd.conf
 	echoC "=== after config ./${TMP_DIR}/hostapd.conf end   ==="
 
-	#sudo cp ./tmpConfigs/hostapd.conf /etc/hostapd/
+	#sudo cp ./${TMP_DIR}/hostapd.conf /etc/hostapd/
 }
 
 isc_DHCP_Server_config()
 {
     echoY "Preparing config file for DHCP server for ${APDEV_NAME} AP node."
-    cp ./configs/dhcpd.conf ./${TMP_DIR}/
-    cp ./configs/isc-dhcp-server ./${TMP_DIR}/
+    cp ./cfgs/dhcpd.conf ./${TMP_DIR}/
+    cp ./cfgs/isc-dhcp-server ./${TMP_DIR}/
 
 	sed -i "s/INTERFACES=\"\"/INTERFACES=\"${APDEV_NAME}\"/" ./${TMP_DIR}/isc-dhcp-server
 
@@ -165,7 +165,7 @@ isc_DHCP_Server_config()
 service_AP_config()
 {
     echo "Preparing systemd service config file for hostapd..."
-	cp configs/AP.service ./${TMP_DIR}/
+	cp cfgs/AP.service ./${TMP_DIR}/
 	sed -i "s/wlan0/${APDEV_NAME}/g" ./${TMP_DIR}/AP.service
 
 	echoC "=== after config ./${TMP_DIR}/AP.service start ==="
@@ -200,7 +200,7 @@ ss_AP_forward_startup_config()
 
 #    enableAP_ss_forward
 
-	sudo sh -c "iptables-save > ./tmpConfigs/iptables.ipv4.nat"
+	sudo sh -c "iptables-save > ./${TMP_DIR}/iptables.ipv4.nat"
 
 }
 
@@ -280,13 +280,13 @@ case $1 in
         if [ $2 == "dep" ]
         then
             sudo apt-get -y install lshw hostapd isc-dhcp-server
-        elif [ $2 == "cfgs"]
+        elif [ $2 == "cfgs" ]
         then
             commit_all_configs_func
-        elif [ $2 == "srvAP"]
+        elif [ $2 == "srvAP" ]
         then
             enable_AP_service_func
-        elif [ $2 == "srvDHCP"]
+        elif [ $2 == "srvDHCP" ]
         then
             enable_DHCP_service_func
         else
