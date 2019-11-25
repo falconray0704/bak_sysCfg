@@ -121,6 +121,7 @@ get_args()
 
 unmanaged_devices()
 {
+    echoY "Preparing config file for ${APDEV_NAME} run as AP node with static IP..."
 	cp /etc/dhcpcd.conf ./${TMP_DIR}/
 	sed -i '$a\interface piAPDev' ./${TMP_DIR}/dhcpcd.conf
 #	sed -i "s/^interface wlan0/interface ${apName}/g" ./${TMP_DIR}/dhcpcd.conf
@@ -134,39 +135,42 @@ hostapd_config()
 	#cmd="s/interface/interface=${apName}"
 	#echo "cmd:${cmd}"
 
+    echoY "Preparing config file for hostapd..."
 	cp ./configs/hostapd.conf ./${TMP_DIR}/hostapd.conf
 	sed -i "s/interface=wlan0/interface=${APDEV_NAME}/g" ./${TMP_DIR}/hostapd.conf
 	sed -i "s/ssid=piAP/ssid=${apSSID}/g" ./${TMP_DIR}/hostapd.conf
 	sed -i "s/channel=6/channel=${apCh}/g" ./${TMP_DIR}/hostapd.conf
 	sed -i "s/wpa_passphrase=piAP/wpa_passphrase=${apPwd}/g" ./${TMP_DIR}/hostapd.conf
 
-	echoY "=== after config ./${TMP_DIR}/hostapd.conf start ==="
+	echoC "=== after config ./${TMP_DIR}/hostapd.conf start ==="
 	cat ./${TMP_DIR}/hostapd.conf
-	echoY "=== after config ./${TMP_DIR}/hostapd.conf end   ==="
+	echoC "=== after config ./${TMP_DIR}/hostapd.conf end   ==="
 
 	#sudo cp ./tmpConfigs/hostapd.conf /etc/hostapd/
 }
 
 isc_DHCP_Server_config()
 {
+    echoY "Preparing config file for DHCP server for ${APDEV_NAME} AP node."
     cp ./configs/dhcpd.conf ./${TMP_DIR}/
     cp ./configs/isc-dhcp-server ./${TMP_DIR}/
 
 	sed -i "s/INTERFACES=\"\"/INTERFACES=\"${APDEV_NAME}\"/" ./${TMP_DIR}/isc-dhcp-server
 
-	echoY "=== after config ./${TMP_DIR}/isc-dhcp-server start ==="
+	echoC "=== after config ./${TMP_DIR}/isc-dhcp-server start ==="
 	cat ./${TMP_DIR}/isc-dhcp-server
-	echoY "=== after config ./${TMP_DIR}/isc-dhcp-server end   ==="
+	echoC "=== after config ./${TMP_DIR}/isc-dhcp-server end   ==="
 }
 
 service_AP_config()
 {
+    echo "Preparing systemd service config file for hostapd..."
 	cp configs/AP.service ./${TMP_DIR}/
 	sed -i "s/wlan0/${APDEV_NAME}/g" ./${TMP_DIR}/AP.service
 
-	echoY "=== after config ./${TMP_DIR}/AP.service start ==="
+	echoC "=== after config ./${TMP_DIR}/AP.service start ==="
 	cat ./${TMP_DIR}/AP.service
-	echoY "=== after config ./${TMP_DIR}/AP.service end   ==="
+	echoC "=== after config ./${TMP_DIR}/AP.service end   ==="
 }
 
 ss_AP_forward_startup_config()
@@ -178,15 +182,15 @@ ss_AP_forward_startup_config()
 #	echo "Please input your output deviceName(eg:eth0):"
 #	read outInterface
 
-	echo "All AP:${APDEV_NAME} packet will forward to: ${APOUT_NAME}"
+	echoY "All AP:${APDEV_NAME} packet will forward to: ${APOUT_NAME}"
 
-	echo "Is it correct? [y/N]"
+	echoY "Is it correct? [y/N]"
 	read isCorrect
 
 	if [ ${isCorrect}x = "Y"x ] || [ ${isCorrect}x = "y"x ]; then
-		echo "Continue to config iptable rules...."
+		echoG "Continue to config iptable rules...."
 	else
-		echo "incorrect"
+		echoR "incorrect"
 		exit 1
 	fi
 
@@ -213,6 +217,48 @@ make_configs_func()
     ss_AP_forward_startup_config
 }
 
+commit_all_configs_func()
+{
+
+	sudo cp ./${TMP_DIR}/dhcpcd.conf /etc/dhcpcd.conf
+    sudo cp ./${TMP_DIR}/dhcpd.conf /etc/dhcp/dhcpd.conf
+
+#    sudo cp ./${TMP_DIR}/dnscrypt-proxy.toml ~/dnsCryptProxy/
+
+	sudo cp ./${TMP_DIR}/hostapd.conf /etc/hostapd/
+	sudo cp ./${TMP_DIR}/AP.service /lib/systemd/system/
+
+	sudo cp ./${TMP_DIR}/iptables.ipv4.nat /etc/iptables.ipv4.nat
+    sudo cp ./cfgs/iptables /etc/network/if-up.d/
+
+    sudo cp ./${TMP_DIR}/isc-dhcp-server /etc/default/
+
+}
+
+enable_AP_service_func()
+{
+	sudo systemctl daemon-reload
+	sudo systemctl enable AP.service
+}
+
+disable_AP_service_func()
+{
+	sudo systemctl disable AP.service
+	sudo systemctl daemon-reload
+}
+
+enable_DHCP_service_func()
+{
+    #sudo systemctl start isc-dhcp-server.service
+    sudo systemctl enable isc-dhcp-server.service
+}
+
+disable_DHCP_service_func()
+{
+    sudo systemctl stop isc-dhcp-server.service
+    sudo systemctl disable isc-dhcp-server.service
+}
+
 usage_func()
 {
     echo "./configure.sh <cmd> <target>"
@@ -221,7 +267,7 @@ usage_func()
     echo "[ install, rename, mk ]"
     echo ""
     echo "Supported target:"
-    echo "[ dep, apDev, apOut, cfgs ]"
+    echo "[ dep, apDev, apOut, cfgs, srvAP, srvDHCP ]"
 }
 
 
@@ -234,8 +280,17 @@ case $1 in
         if [ $2 == "dep" ]
         then
             sudo apt-get -y install lshw hostapd isc-dhcp-server
+        elif [ $2 == "cfgs"]
+        then
+            commit_all_configs_func
+        elif [ $2 == "srvAP"]
+        then
+            enable_AP_service_func
+        elif [ $2 == "srvDHCP"]
+        then
+            enable_DHCP_service_func
         else
-            echoR "Command install only support target dep."
+            echoR "Command install only support targets [ dep, cfgs, srvAP, srvDHCP ]."
         fi
         ;;
     rename) echoY "Renaming AP device name to piAPDev..."
@@ -248,12 +303,27 @@ case $1 in
             echoR "Command rename only support targets: [ apDev, apOut ]."
         fi
         ;;
-    mk) echo "Making configs ..."
+    mk) echoY "Making configs ..."
         if [ $2 == "cfgs" ]
         then
             make_configs_func
         else
-            echoR "Command mk only support target [ cfgs ]."
+            echoR "Command mk only support targets [ cfgs ]."
+        fi
+        ;;
+    uninstall) echoY "Uninstalling $2 ..."
+        if [ $2 == "srvAll" ]
+        then
+            disable_AP_service_func
+            disable_DHCP_service_func
+
+            echoY "uninstall finished..."
+            echoY "press any key to reboot system"
+            read rb
+
+            sudo reboot
+        else
+            echoR "Command uninstall only support targets [ srvAP, srvDHCP ]."
         fi
         ;;
     *) echo "Unsupported cmd:$1."
