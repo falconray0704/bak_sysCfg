@@ -40,7 +40,7 @@ rename_AP_out_func()
     sudo lshw -C network | grep -E "-network|description|logical name|serial"
     echoY "Please input the name of device which use for AP out:"
     read APOUT_NAME
-    APDEV_MAC=$(get_iether_MAC ${APOUT_NAME})
+    APOUT_MAC=$(get_iether_MAC ${APOUT_NAME})
     if [ ${APOUT_MAC} ]
     then
         echo "device mac: ${APOUT_MAC}"
@@ -298,6 +298,7 @@ case $1 in
         then
             rename_AP_device_func
         elif [ $2 == "apOut" ]
+	then
             rename_AP_out_func
         else
             echoR "Command rename only support targets: [ apDev, apOut ]."
