@@ -27,7 +27,7 @@ apPwd=piAP
 ssIP="127.0.0.1"
 ssPort=9000
 ssrListenPort=62586
-ssEncryptMethod="aes-256-cfb"
+#ssEncryptMethod="aes-256-cfb"
 
 ssTcpFast="N"
 sstPort=9001
@@ -91,10 +91,10 @@ get_args()
 	echoY "Please input your AP password:"
 	read apPwd
 
-#	echo "Please input your ss server IP:"
-#	read ssIP
-#	echo "Please input your ss-redir local port:"
-#	read ssrListenPort
+	echo "Please input your ss server IP:"
+	read ssIP
+	echo "Please input your ss-redir local port:"
+	read ssrListenPort
 
 
 	echo "Your AP name is: ${APDEV_NAME}"
@@ -105,8 +105,8 @@ get_args()
 	echo "Your AP SSID is: ${apSSID}"
 	echo "Your AP password is: ${apPwd}"
 
-#	echo "Your server IP is: ${ssIP}"
-#	echo "Your ss-redir local port is: ${ssrListenPort}"
+	echo "Your server IP is: ${ssIP}"
+	echo "Your ss-redir local port is: ${ssrListenPort}"
 
 	echoY "Is it correct? [y/N]"
 	read isCorrect
@@ -173,6 +173,27 @@ service_AP_config()
 	echoC "=== after config ./${TMP_DIR}/AP.service end   ==="
 }
 
+enableAP_ss_forward()
+{
+
+	sudo iptables -t nat -N SHADOWSOCKS
+
+	sudo iptables -t nat -A SHADOWSOCKS -d ${ssIP} -j RETURN
+	sudo iptables -t nat -A SHADOWSOCKS -d 0.0.0.0/8 -j RETURN
+	sudo iptables -t nat -A SHADOWSOCKS -d 10.0.0.0/8 -j RETURN
+	sudo iptables -t nat -A SHADOWSOCKS -d 127.0.0.0/8 -j RETURN
+	sudo iptables -t nat -A SHADOWSOCKS -d 169.254.0.0/16 -j RETURN
+	sudo iptables -t nat -A SHADOWSOCKS -d 172.16.0.0/12 -j RETURN
+	sudo iptables -t nat -A SHADOWSOCKS -d 192.168.0.0/16 -j RETURN
+	sudo iptables -t nat -A SHADOWSOCKS -d 224.0.0.0/4 -j RETURN
+	sudo iptables -t nat -A SHADOWSOCKS -d 240.0.0.0/4 -j RETURN
+
+	sudo iptables -t nat -A SHADOWSOCKS -p tcp -j REDIRECT --to-ports ${ssrListenPort}
+	sudo iptables -t nat -A PREROUTING -p tcp -j SHADOWSOCKS
+	sudo iptables -t nat -A OUTPUT -p tcp -j SHADOWSOCKS
+
+}
+
 ss_AP_forward_startup_config()
 {
 	sudo lshw -C network | grep -E "-network|description|logical name|serial"
@@ -198,7 +219,7 @@ ss_AP_forward_startup_config()
 	sudo iptables -A FORWARD -i ${APOUT_NAME} -o ${APDEV_NAME} -m state --state RELATED,ESTABLISHED -j ACCEPT
 	sudo iptables -A FORWARD -i ${APDEV_NAME} -o ${APOUT_NAME} -j ACCEPT
 
-#    enableAP_ss_forward
+    enableAP_ss_forward
 
 	sudo sh -c "iptables-save > ./${TMP_DIR}/iptables.ipv4.nat"
 
