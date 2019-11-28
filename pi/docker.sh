@@ -10,7 +10,7 @@ install_DockerCompose_func()
 {
     # Install required packages
     sudo apt update
-    sudo apt install -y python python-pip libffi-dev python-backports.ssl-match-hostname
+    sudo apt install -y libssl-dev python python-pip libffi-dev python-backports.ssl-match-hostname
 
     # Install Docker Compose from pip
     # This might take a while
