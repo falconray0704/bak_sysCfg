@@ -23,12 +23,16 @@ uninstall_systemDNS_func()
     sudo systemctl stop systemd-resolved.service
     sudo systemctl disable systemd-resolved.service
 
+    # prevent /etc/resolv.conf using gateway's dns
+	sudo sed -i '/^static domain_name_servers=.*/d' /etc/dhcpcd.conf
+	sudo sed -i '/^#static domain_name_servers=192.168.1.1$/a\static domain_name_servers=127.0.0.1' /etc/dhcpcd.conf
+
 }
 
 
 usage_func()
 {
-    echo "./configure.sh <cmd> <target>"
+    echo "./run.sh <cmd> <target>"
     echo ""
     echo "Supported cmd:"
     echo "[ uninstall, check ]"
