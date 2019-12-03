@@ -10,7 +10,11 @@ set -o errexit
 . ../libShell/echo_color.lib
 . ../libShell/sysEnv.lib
 
-SS_REDIR_INSTALL_PATH=${HOME}/ssredir
+ARCH=$(arch)
+RELEASE_ROOT_DIR="deployPkgs"
+INSTALL_ROOT_PATH=${HOME}/${RELEASE_ROOT_DIR}/${ARCH}
+
+SS_REDIR_INSTALL_PATH=${INSTALL_ROOT_PATH}/ss
 
 isCorrect="N"
 
@@ -126,7 +130,7 @@ disable_ss_service_func()
 
 usage_func()
 {
-    echoY "./ss.sh <cmd> "
+    echoY "./run.sh <cmd> "
     echo ""
     echoY "Supported cmd:"
     echo "[ mkcfg, install_service, uninstall_service, enable_service, disable_service, check_bbr ]"
