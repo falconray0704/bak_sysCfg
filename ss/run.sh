@@ -14,7 +14,9 @@ ARCH=$(arch)
 RELEASE_ROOT_DIR="deployPkgs"
 INSTALL_ROOT_PATH=${HOME}/${RELEASE_ROOT_DIR}/${ARCH}
 
-SS_REDIR_INSTALL_PATH=${INSTALL_ROOT_PATH}/ss
+SS_INSTALL_PATH=${INSTALL_ROOT_PATH}/ss
+
+SS_SRV_DEPLOY_PATH=${HOME}
 
 isCorrect="N"
 
@@ -61,7 +63,7 @@ check_bbr_func()
 
 build_ss_redir_configs()
 {
-    pushd ${SS_REDIR_INSTALL_PATH}
+    pushd ${SS_INSTALL_PATH}
     rm -rf ./tmpSSConfigs
     mkdir -p ./tmpSSConfigs
     cp ./config.json ./tmpSSConfigs/
@@ -88,12 +90,13 @@ make_ss_configs_func()
 
 install_ss_service_func()
 {
-    pushd ${SS_REDIR_INSTALL_PATH}
+    pushd ${SS_INSTALL_PATH}
     sudo mkdir -p /etc/shadowsocks-libev
 
     sudo cp ./ss-redir /usr/bin/
-    sudo cp tmpSSConfigs/config.json /etc/shadowsocks-libev/
     sudo cp ./shadowsocks-libev-redir.service /lib/systemd/system/
+
+    sudo cp ./tmpSSConfigs/config.json /etc/shadowsocks-libev/
     popd
 }
 
@@ -102,7 +105,6 @@ uninstall_ss_service_func()
     disable_ss_service_func
 
     sudo rm -rf /etc/shadowsocks-libev_bak
-    sudo mv /etc/shadowsocks-libev /etc/shadowsocks-libev_bak
 
     sudo rm /lib/systemd/system/shadowsocks-libev-redir.service
     sudo rm /usr/bin/ss-redir
@@ -120,44 +122,91 @@ disable_ss_service_func()
 	sudo systemctl disable shadowsocks-libev-redir.service
 }
 
-
-#if [ $UID -ne 0 ]
-#then
-#    echoY "Superuser privileges are required to run this script."
-#    echoY "e.g. \"sudo $0\""
-#    exit 1
-#fi
+deploy_docker_server_func()
+{
+    rm -rf ${SS_SRV_DEPLOY_PATH}/ssSrv
+    cp -a ./scripts/ssSrv ${SS_SRV_DEPLOY_PATH}/
+    pushd ${SS_SRV_DEPLOY_PATH}/ssSrv
+    sed -i "s/ss_arch/ss_${ARCH}/" ./docker-compose.yml
+    popd
+}
 
 usage_func()
 {
-    echoY "./run.sh <cmd> "
+    echoY "./run.sh <cmd> <target>"
     echo ""
     echoY "Supported cmd:"
-    echo "[ mkcfg, install_service, uninstall_service, enable_service, disable_service, check_bbr ]"
+    echo "[ mk, install, uninstall, enable, disable, deploy, check ]"
+    echoY "Supported targets:"
+    echo "[ cfgs, ssredir, server, bbr ]"
 }
-
 
 [ $# -lt 1 ] && echoR "Invalid args count:$# " && usage_func && exit 1
 
 case $1 in
-	mkcfg) echoY "Make ss config files..."
-        make_ss_configs_func
+	mk)
+        if [ $2 == "cfgs" ]
+        then
+            echoY "Make ss config files..."
+            make_ss_configs_func
+        else
+            echoR "mk command only targets: [ cfgs ]"
+        fi
 	;;
-	install_service) echoY "Install ss-redir service..."
-        install_ss_service_func
-        enable_ss_service_func
+	install)
+        if [ $2 == "ssredir" ]
+        then 
+            echoY "Installing ss-redir ..."
+            install_ss_service_func
+            enable_ss_service_func
+        else
+            echoR "install command only targets: [ ssredir ]"
+        fi
 	;;
-	uninstall_service) echoY "Uninstall ss-redir service..."
-	uninstall_ss_service_func
+	uninstall)
+        if [ $2 == "ssredir" ]
+        then
+            echoY "Uninstall ss-redir service..."
+            uninstall_ss_service_func
+        else
+            echoR "uninstall command only targets: [ ssredir ]"
+        fi
 	;;
-	enable_service) echoY "Enable ss-redir service..."
-        enable_ss_service_func
+	enable)
+        if [ $2 == "ssredir" ]
+        then
+            echoY "Enable ss-redir service..."
+            enable_ss_service_func
+        else
+            echoR "enable command only targets: [ ssredir ]"
+        fi
 	;;
-	disable_service) echoY "Disable ss-redir service..."
-        disable_ss_service_func
+	disable)
+        if [ $2 == "ssredir" ]
+        then
+            echoY "Disable ss-redir service..."
+            disable_ss_service_func
+        else
+            echoR "enable command only targets: [ ssredir ]"
+        fi
 	;;
-	check_bbr) echoY "Checking for enable bbr..."
-        check_bbr_func
+	deploy)
+        if [ $2 == "server" ]
+        then
+            echoY "Deploying ss server with docker ..."
+            deploy_docker_server_func
+        else
+            echoR "deploy command only targets: [ server ]"
+        fi
+	;;
+	check)
+        if [ $2 == "bbr" ]
+        then
+            echoY "Checking for enable bbr..."
+            check_bbr_func
+        else
+            echoR "check command only targets: [ bbr ]"
+        fi
 	;;
 	*) echo "unknow cmd"
         usage_func
