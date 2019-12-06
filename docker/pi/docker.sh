@@ -3,8 +3,8 @@
 set -o nounset
 set -o errexit
 
-. ../libShell/echo_color.lib
-. ../libShell/sysEnv.lib
+. ../../libShell/echo_color.lib
+. ../../libShell/sysEnv.lib
 
 install_DockerCompose_func()
 {
@@ -82,26 +82,38 @@ check_Docker_Env_func()
 
 print_usage_func()
 {
+    echoY "Usage: ./run.sh <cmd> <target>"
+    echo ""
     echoY "Supported operations:"
-    echo "install"
-    echo "check"
-    echo "compose"
+    echo "[ install, check ]"
+    echo ""
+    echoY "Supported targets:"
+    echo "[ docker, compose ]"
 }
 
 [ $# -lt 1 ] && print_usage_func && exit 1
 
 case $1 in
-    install) echoY "Installing ..."
+    install) echoY "Installing $2..."
         is_root_func
-        install_Docker_func
+        if [ $2 == "docker" ]
+        then
+            install_Docker_func
+        elif [ $2 == "compose" ]
+        then
+#            install_DockerCompose_run_as_container_func
+            install_DockerCompose_func
+        else
+            echoR "install command only support targets: [ docker, compose ]."
+        fi
         ;;
     check) echoY "Checking docker env..."
-        check_Docker_Env_func
-        ;;
-    compose) echoY "Installing Docker Compose ..."
-        is_root_func
-#        install_DockerCompose_run_as_container_func
-        install_DockerCompose_func
+        if [ $2 == "docker" ]
+        then
+            check_Docker_Env_func
+        else
+            echoR "check command only support targets: [ docker ]."
+        fi
         ;;
     *) echoR "Unknown cmd: $1"
         print_usage_func
