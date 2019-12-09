@@ -91,10 +91,10 @@ get_args()
 	echoY "Please input your AP password:"
 	read apPwd
 
-	echo "Please input your ss server IP:"
-	read ssIP
-	echo "Please input your ss-redir local port:"
-	read ssrListenPort
+#	echoY "Please input your ss server IP:"
+#	read ssIP
+#	echoY "Please input your ss-redir local port:"
+#	read ssrListenPort
 
 
 	echo "Your AP name is: ${APDEV_NAME}"
@@ -105,8 +105,8 @@ get_args()
 	echo "Your AP SSID is: ${apSSID}"
 	echo "Your AP password is: ${apPwd}"
 
-	echo "Your server IP is: ${ssIP}"
-	echo "Your ss-redir local port is: ${ssrListenPort}"
+#	echo "Your server IP is: ${ssIP}"
+#	echo "Your ss-redir local port is: ${ssrListenPort}"
 
 	echoY "Is it correct? [y/N]"
 	read isCorrect
