@@ -282,17 +282,17 @@ disable_DHCP_service_func()
 
 usage_func()
 {
-    echo "./configure.sh <cmd> <target>"
+    echoY "./configure.sh <cmd> <target>"
     echo ""
-    echo "Supported cmd:"
+    echoY "Supported cmd:"
     echo "[ install, rename, mk ]"
     echo ""
-    echo "Supported target:"
+    echoY "Supported target:"
     echo "[ dep, apDev, apOut, cfgs, srvAP, srvDHCP ]"
 }
 
 
-[ $# -lt 2 ] && echo "Invalid args count:$# " && usage_func && exit 1
+[ $# -lt 2 ] && echoR "Invalid args count:$# " && usage_func && exit 1
 
 mkdir -p ${TMP_DIR}
 
