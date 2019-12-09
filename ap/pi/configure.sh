@@ -84,6 +84,7 @@ get_args()
 #    read APOUT_NAME
 #    APOUT_MAC=$(get_iether_MAC ${APOUT_NAME})
 
+    echoC "MAC of ${APDEV_NAME} is: ${APDEV_MAC}"
 	echoY "Please input your AP channel number(eg:6):"
 	read apCh
 	echoY "Please input your AP SSID:"
