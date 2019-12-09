@@ -80,9 +80,9 @@ get_args()
     echoY "Please input the name of device which use for AP:"
     read APDEV_NAME
     APDEV_MAC=$(get_iether_MAC ${APDEV_NAME})
-    echoY "Please input the name of device which use for AP out:"
-    read APOUT_NAME
-    APOUT_MAC=$(get_iether_MAC ${APOUT_NAME})
+#    echoY "Please input the name of device which use for AP out:"
+#    read APOUT_NAME
+#    APOUT_MAC=$(get_iether_MAC ${APOUT_NAME})
 
 	echoY "Please input your AP channel number(eg:6):"
 	read apCh
@@ -99,7 +99,7 @@ get_args()
 
 	echo "Your AP name is: ${APDEV_NAME}"
 	echo "Your AP Mac address is: ${APDEV_MAC}"
-	echo "Your AP out name is: ${APOUT_NAME}"
+#	echo "Your AP out name is: ${APOUT_NAME}"
 	echo "Your AP out Mac address is: ${APOUT_MAC}"
 	echo "Your AP channel is: ${apCh}"
 	echo "Your AP SSID is: ${apSSID}"
@@ -124,7 +124,6 @@ unmanaged_devices()
     echoY "Preparing config file for ${APDEV_NAME} run as AP node with static IP..."
 	cp /etc/dhcpcd.conf ./${TMP_DIR}/
 	sed -i '$a\interface piAPDev' ./${TMP_DIR}/dhcpcd.conf
-#	sed -i "s/^interface wlan0/interface ${apName}/g" ./${TMP_DIR}/dhcpcd.conf
 	sed -i '$a\static ip_address=192\.168\.11\.1\/24' ./${TMP_DIR}/dhcpcd.conf
 	sed -i '$a\nohook wpa_supplicant' ./${TMP_DIR}/dhcpcd.conf
 
@@ -226,7 +225,7 @@ ss_AP_forward_startup_config()
 }
 
 
-make_configs_func()
+make_AP_configs_func()
 {
 #    mkdir -p ./${TMP_DIR}
     get_args
@@ -235,10 +234,10 @@ make_configs_func()
     isc_DHCP_Server_config
     service_AP_config
 
-    ss_AP_forward_startup_config
+#    ss_AP_forward_startup_config
 }
 
-commit_all_configs_func()
+install_AP_configs_func()
 {
 
 	sudo cp ./${TMP_DIR}/dhcpcd.conf /etc/dhcpcd.conf
@@ -249,8 +248,8 @@ commit_all_configs_func()
 	sudo cp ./${TMP_DIR}/hostapd.conf /etc/hostapd/
 	sudo cp ./${TMP_DIR}/AP.service /lib/systemd/system/
 
-	sudo cp ./${TMP_DIR}/iptables.ipv4.nat /etc/iptables.ipv4.nat
-    sudo cp ./cfgs/iptables /etc/network/if-up.d/
+#	sudo cp ./${TMP_DIR}/iptables.ipv4.nat /etc/iptables.ipv4.nat
+#    sudo cp ./cfgs/iptables /etc/network/if-up.d/
 
     sudo cp ./${TMP_DIR}/isc-dhcp-server /etc/default/
 
@@ -285,10 +284,10 @@ usage_func()
     echoY "./configure.sh <cmd> <target>"
     echo ""
     echoY "Supported cmd:"
-    echo "[ install, rename, mk ]"
+    echo "[ install, rename, mk, uninstall ]"
     echo ""
     echoY "Supported target:"
-    echo "[ dep, apDev, apOut, cfgs, srvAP, srvDHCP ]"
+    echo "[ dep, apDev, apCfgs, srvAP, srvDHCP, apOut ]"
 }
 
 
@@ -301,9 +300,9 @@ case $1 in
         if [ $2 == "dep" ]
         then
             sudo apt-get -y install lshw hostapd isc-dhcp-server
-        elif [ $2 == "cfgs" ]
+        elif [ $2 == "apCfgs" ]
         then
-            commit_all_configs_func
+            install_AP_configs_func
         elif [ $2 == "srvAP" ]
         then
             enable_AP_service_func
@@ -326,20 +325,30 @@ case $1 in
         fi
         ;;
     mk) echoY "Making configs ..."
-        if [ $2 == "cfgs" ]
+        if [ $2 == "apCfgs" ]
         then
-            make_configs_func
+            make_AP_configs_func
         else
             echoR "Command mk only support targets [ cfgs ]."
         fi
         ;;
     uninstall) echoY "Uninstalling $2 ..."
-        if [ $2 == "srvAll" ]
+        if [ $2 == "srvAP" ]
         then
             disable_AP_service_func
+#            disable_DHCP_service_func
+
+            echoG "uninstall finished..."
+            echoY "press any key to reboot system"
+            read rb
+
+            sudo reboot
+        elif [ $2 == "srvDHCP" ]
+        then
+#            disable_AP_service_func
             disable_DHCP_service_func
 
-            echoY "uninstall finished..."
+            echoG "uninstall finished..."
             echoY "press any key to reboot system"
             read rb
 
