@@ -12,7 +12,7 @@ set -e
 
 TMP_DIR="tmp"
 
-APDEV_NAME=""
+APDEV_NAME="piAPDev"
 APDEV_MAC="macAddr"
 
 APOUT_NAME=""
@@ -77,8 +77,8 @@ get_args()
 	#iw list
 	#lshw -C network
     sudo lshw -C network | grep -E "-network|description|logical name|serial"
-    echoY "Please input the name of device which use for AP:"
-    read APDEV_NAME
+#    echoY "Please input the name of device which use for AP:"
+#    read APDEV_NAME
     APDEV_MAC=$(get_iether_MAC ${APDEV_NAME})
 #    echoY "Please input the name of device which use for AP out:"
 #    read APOUT_NAME
