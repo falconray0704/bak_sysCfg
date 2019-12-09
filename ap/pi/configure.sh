@@ -33,6 +33,10 @@ ssTcpFast="N"
 sstPort=9001
 
 
+ARCH=$(arch)
+
+RELEASE_ROOT_DIR="deployPkgs"
+INSTALL_ROOT_PATH=${HOME}/${RELEASE_ROOT_DIR}/${ARCH}
 
 rename_AP_out_func()
 {
@@ -262,11 +266,27 @@ enable_AP_service_func()
 	sudo systemctl enable AP.service
 }
 
+enable_AP_dnscrypt_func()
+{
+    pushd ${INSTALL_ROOT_PATH}/dnscrypt-proxy
+	sed -i "s/^listen_addresses =.*/listen_addresses = \['127.0.0.1:53', '192.168.11.1:53'\]/" dnscrypt-proxy.toml
+    popd
+}
+
+
 disable_AP_service_func()
 {
 	sudo systemctl disable AP.service
 	sudo systemctl daemon-reload
 }
+
+disable_AP_dnscrypt_func()
+{
+    pushd ${INSTALL_ROOT_PATH}/dnscrypt-proxy
+	sed -i "s/^listen_addresses =.*/listen_addresses = \['127.0.0.1:53'\]/" dnscrypt-proxy.toml
+    popd
+}
+
 
 enable_DHCP_service_func()
 {
@@ -307,6 +327,7 @@ case $1 in
         elif [ $2 == "srvAP" ]
         then
             enable_AP_service_func
+            enable_AP_dnscrypt_func
         elif [ $2 == "srvDHCP" ]
         then
             enable_DHCP_service_func
@@ -339,6 +360,7 @@ case $1 in
             disable_AP_service_func
 #            disable_DHCP_service_func
 
+            disable_AP_dnscrypt_func
             echoG "uninstall finished..."
             echoY "press any key to reboot system"
             read rb
