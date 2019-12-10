@@ -214,6 +214,7 @@ enable_DHCP_service_func()
 {
     #sudo systemctl start isc-dhcp-server.service
     sudo systemctl enable isc-dhcp-server.service
+    sudo systemctl restart isc-dhcp-server.service
 }
 
 install_AP_DHCP_func()
@@ -391,6 +392,10 @@ case $1 in
         elif [ $2 == "iptable" ]
         then
             install_iptable_func
+            echoG "Install $2 finished..."
+            echoY "Press any key to reboot system"
+            read rb
+            sudo reboot
         else
             echoR "Command install only support targets [ dep, devAP, apDHCP, apDNS, iptable ]."
         fi
